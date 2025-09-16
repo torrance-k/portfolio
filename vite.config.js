@@ -5,7 +5,6 @@ import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import tailwindcss from '@tailwindcss/vite'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
@@ -16,7 +15,7 @@ export default defineConfig({
     host: '0.0.0.0',
     port: process.env.PORT ? Number(process.env.PORT) : 4173,
     strictPort: true,
-    allowedHosts: ['porfolio-men9.onrender.com']
+    allowedHosts: true
   },
   resolve: {
     alias: {
