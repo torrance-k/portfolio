@@ -1,0 +1,138 @@
+<template>
+    <header class="sticky top-0 z-50">
+        <nav class="mx-auto container px-4 sm:px-6 lg:px-8 mt-4">
+            <div
+                class="flex items-center justify-between rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-white/30 dark:border-white/10 shadow-sm backdrop-blur-md px-4 py-2">
+                <RouterLink to="/" class="font-semibold tracking-tight">Tori.dev</RouterLink>
+                <div ref="linksEl" class="relative flex items-center gap-4 text-sm">
+                    <RouterLink to="/" data-key="home" class="py-1">Home</RouterLink>
+                    <RouterLink :to="{ path: '/', hash: '#projects' }" data-key="projectsRoute" class="py-1">Projects
+                    </RouterLink>
+                    <RouterLink :to="{ path: '/', hash: '#skills' }" data-key="skills" class="py-1">Skills</RouterLink>
+                    <RouterLink :to="{ path: '/', hash: '#experience' }" data-key="experience" class="py-1">Experience
+                    </RouterLink>
+                    <RouterLink :to="{ path: '/', hash: '#contact' }" data-key="contact" class="py-1">Contact
+                    </RouterLink>
+
+                    <!-- animated underline -->
+                    <span
+                        class="pointer-events-none absolute -bottom-0.5 h-0.5 rounded-full bg-slate-900/80 dark:bg-white/80 transition-all duration-300"
+                        :style="{ left: underlineLeft + 'px', width: underlineWidth + 'px' }"></span>
+                </div>
+                <!-- THEME TOGGLE stays here, outside the linksEl block -->
+                <button @click="emit('toggle-theme')"
+                    class="rounded-md px-3 py-1 border border-white/40 dark:border-white/10 bg-white/40 dark:bg-slate-800/40">
+                    <span v-if="theme === 'light'">Dark</span>
+                    <span v-else>Light</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+</template>
+
+
+<script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
+
+
+const props = defineProps<{ theme: string }>()
+const emit = defineEmits<{ (e: 'toggle-theme'): void }>()
+
+const linksEl = ref<HTMLElement | null>(null)
+const underlineLeft = ref(0)
+const underlineWidth = ref(0)
+
+// which nav key should be underlined: 'home' | 'projectsRoute' | 'contact'
+const activeKey = ref<'home' | 'projectsRoute' | 'skills' | 'experience' | 'contact'>('home')
+
+// which home section is in view: 'home' | 'projects' | 'skills' | 'experience' | 'contact'
+const sectionKey = ref<'home' | 'projects' | 'skills' | 'experience' | 'contact'>('home')
+
+let spy: IntersectionObserver | null = null
+
+function placeUnderlineForKey(key: string) {
+    const root = linksEl.value
+    if (!root) return
+    const el = root.querySelector<HTMLElement>(`[data-key="${key}"]`)
+    if (!el) return
+    underlineLeft.value = el.offsetLeft
+    underlineWidth.value = el.offsetWidth
+}
+
+function keyFromSection(s: string): typeof activeKey.value {
+    return s === 'projects' ? 'projectsRoute'
+        : s === 'skills' ? 'skills'
+            : s === 'experience' ? 'experience'
+                : s === 'contact' ? 'contact'
+                    : 'home'
+}
+
+function onTopCheck() {
+    if (window.scrollY < 80) {
+        sectionKey.value = 'home'
+        activeKey.value = 'home'
+        placeUnderlineForKey('home')
+    }
+}
+
+function onBottomCheck() {
+    const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4
+    if (atBottom) {
+        sectionKey.value = 'contact'
+        activeKey.value = 'contact'
+        nextTick(() => placeUnderlineForKey('contact'))
+    }
+}
+
+function startScrollSpy() {
+    stopScrollSpy()
+    const ids = ['projects', 'skills', 'experience', 'contact']
+    spy = new IntersectionObserver(entries => {
+        for (const e of entries) {
+            if (e.isIntersecting) {
+                sectionKey.value = (e.target as HTMLElement).id as any
+                activeKey.value = keyFromSection(sectionKey.value)
+                nextTick(() => placeUnderlineForKey(activeKey.value))
+            }
+        }
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0.1 })
+    ids.forEach(id => {
+        const el = document.getElementById(id)
+        if (el) spy!.observe(el)
+    })
+    window.addEventListener('scroll', onTopCheck, { passive: true })
+    window.addEventListener('scroll', onBottomCheck, { passive: true })
+
+}
+
+function stopScrollSpy() {
+    if (spy) { spy.disconnect(); spy = null }
+    window.removeEventListener('scroll', onTopCheck)
+    window.removeEventListener('scroll', onBottomCheck)
+}
+
+const route = useRoute()
+
+// react to route changes (home = scroll spy; projects route = underline Projects)
+watch(
+    () => route.fullPath,
+    async () => {
+        const hash = route.hash?.slice(1)
+        if (route.name === 'projects' || route.name === 'project') {
+            stopScrollSpy()
+            activeKey.value = 'projectsRoute'
+        } else {
+            startScrollSpy()
+            activeKey.value = hash ? keyFromSection(hash) : keyFromSection(sectionKey.value)
+        }
+        await nextTick()
+        placeUnderlineForKey(activeKey.value)
+    },
+    { immediate: true }
+)
+
+function onResize() { placeUnderlineForKey(activeKey.value) }
+onMounted(() => window.addEventListener('resize', onResize))
+onBeforeUnmount(() => { window.removeEventListener('resize', onResize); stopScrollSpy() })
+</script>
