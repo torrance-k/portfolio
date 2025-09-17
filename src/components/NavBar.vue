@@ -38,51 +38,46 @@
                 </button>
 
                 <!-- MOBILE DRAWER -->
-                <Transition name="page">
-                    <div v-show="open" class="fixed inset-0 z-[70] md:hidden" @click.self="closeMenu"
-                        @keydown.esc="closeMenu">
-                        <!-- backdrop -->
-                        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+                <Teleport to="body">
+                    <div v-show="open" class="fixed inset-0 z-[100] md:hidden" @keydown.esc="closeMenu">
+                        <!-- Backdrop -->
+                        <div class="absolute inset-0 bg-black/55 backdrop-blur-sm" @click="closeMenu"></div>
 
-                        <!-- panel -->
-                        <aside id="mobile-drawer" class="ml-auto h-full w-[84vw] max-w-[360px] rounded-l-2xl
-         bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl
-         border-l border-white/20 dark:border-white/10
-         shadow-2xl p-4
-         relative z-[71] grid gap-2
-         text-slate-900 dark:text-slate-100">
+                        <!-- Slide-in panel (right) -->
+                        <aside id="mobile-drawer" class="absolute right-0 top-0 h-full w-[84vw] max-w-[360px]
+             rounded-l-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl
+             border-l border-white/20 dark:border-white/10 shadow-2xl p-4
+             text-slate-900 dark:text-slate-100
+             transition-transform duration-300 will-change-transform"
+                            :class="open ? 'translate-x-0' : 'translate-x-full'" role="dialog" aria-modal="true"
+                            aria-label="Menu">
                             <div class="flex items-center justify-between mb-2">
-                                <div class="font-semibold">Menu</div>
+                                <div class="font-semibold text-lg">Menu</div>
                                 <button class="rounded-md p-2 border border-white/40 dark:border-white/10"
                                     @click="closeMenu" aria-label="Close menu">✕</button>
                             </div>
 
-                            <!-- Mobile links (the same targets as desktop) -->
+                            <!-- Mobile links ONLY (no theme toggle) -->
                             <nav class="grid gap-1 text-base">
                                 <RouterLink to="/"
                                     class="px-2 py-3 rounded-lg hover:bg-white/60 dark:hover:bg-slate-800/60"
                                     @click="closeMenu">Home</RouterLink>
                                 <RouterLink :to="{ path: '/', hash: '#projects' }"
                                     class="px-2 py-3 rounded-lg hover:bg-white/60 dark:hover:bg-slate-800/60"
-                                    @click="closeMenu">
-                                    Projects</RouterLink>
+                                    @click="closeMenu">Projects</RouterLink>
                                 <RouterLink :to="{ path: '/', hash: '#skills' }"
                                     class="px-2 py-3 rounded-lg hover:bg-white/60 dark:hover:bg-slate-800/60"
-                                    @click="closeMenu">Skills
-                                </RouterLink>
+                                    @click="closeMenu">Skills</RouterLink>
                                 <RouterLink :to="{ path: '/', hash: '#experience' }"
                                     class="px-2 py-3 rounded-lg hover:bg-white/60 dark:hover:bg-slate-800/60"
-                                    @click="closeMenu">
-                                    Experience</RouterLink>
+                                    @click="closeMenu">Experience</RouterLink>
                                 <RouterLink :to="{ path: '/', hash: '#contact' }"
                                     class="px-2 py-3 rounded-lg hover:bg-white/60 dark:hover:bg-slate-800/60"
-                                    @click="closeMenu">
-                                    Contact</RouterLink>
+                                    @click="closeMenu">Contact</RouterLink>
                             </nav>
-
                         </aside>
                     </div>
-                </Transition>
+                </Teleport>
 
                 <!-- THEME TOGGLE stays here, outside the linksEl block -->
                 <button @click="emit('toggle-theme')"
