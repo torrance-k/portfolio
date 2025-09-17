@@ -5,7 +5,7 @@
                 class="flex items-center justify-between rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-white/30 dark:border-white/10 shadow-sm backdrop-blur-md px-4 py-2">
                 <RouterLink to="/" class="font-semibold tracking-tight">Tori.dev</RouterLink>
 
-                <div class="hidden md:flex items center gap-4 text-sm">
+                <div v-if="isHome" class="hidden md:flex items center gap-4 text-sm">
                     <div ref="linksEl" class="relative flex items-center gap-4 text-sm">
                         <RouterLink to="/" data-key="home" class="py-1">Home</RouterLink>
                         <RouterLink :to="{ path: '/', hash: '#projects' }" data-key="projectsRoute" class="py-1">
@@ -26,7 +26,7 @@
                     </div>
                 </div>
 
-                <button
+                <button v-if="isHome"
                     class="md:hidden inline-flex items-center justify-center rounded-md p-2 border border-white/40 dark:border-white/10"
                     :aria-expanded="open ? 'true' : 'false'" aria-controls="mobile-drawer" @click="open = !open">
                     <span class="sr-only">Open menu</span>
@@ -92,9 +92,12 @@
 
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch, nextTick, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
+
+const route = useRoute()
+const isHome = computed(() => route.name === 'home' || route.path === '/')
 
 const props = defineProps<{ theme: string }>()
 const emit = defineEmits<{ (e: 'toggle-theme'): void }>()
@@ -177,7 +180,6 @@ function stopScrollSpy() {
     window.removeEventListener('scroll', onBottomCheck)
 }
 
-const route = useRoute()
 
 // react to route changes (home = scroll spy; projects route = underline Projects)
 watch(
@@ -199,6 +201,7 @@ watch(
 
 watch(() => route.fullPath, () => { open.value = false })
 watch(open, v => { document.body.style.overflow = v ? 'hidden' : '' })
+watch(() => route.fullPath, () => { open.value = false })
 
 function onResize() { placeUnderlineForKey(activeKey.value) }
 onMounted(() => window.addEventListener('resize', onResize))
