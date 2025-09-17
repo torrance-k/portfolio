@@ -42,11 +42,15 @@
                     <div v-show="open" class="fixed inset-0 z-[70] md:hidden" @click.self="closeMenu"
                         @keydown.esc="closeMenu">
                         <!-- backdrop -->
-                        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+                        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
 
                         <!-- panel -->
-                        <aside id="mobile-drawer" class="ml-auto h-full w-[82vw] max-w-[320px] bg-white/95 dark:bg-slate-900/95 shadow-xl p-4
-             relative z-[71] grid gap-2">
+                        <aside id="mobile-drawer" class="ml-auto h-full w-[84vw] max-w-[360px] rounded-l-2xl
+         bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl
+         border-l border-white/20 dark:border-white/10
+         shadow-2xl p-4
+         relative z-[71] grid gap-2
+         text-slate-900 dark:text-slate-100">
                             <div class="flex items-center justify-between mb-2">
                                 <div class="font-semibold">Menu</div>
                                 <button class="rounded-md p-2 border border-white/40 dark:border-white/10"
@@ -55,23 +59,27 @@
 
                             <!-- Mobile links (the same targets as desktop) -->
                             <nav class="grid gap-1 text-base">
-                                <RouterLink to="/" class="py-2" @click="closeMenu">Home</RouterLink>
-                                <RouterLink :to="{ path: '/', hash: '#projects' }" class="py-2" @click="closeMenu">
+                                <RouterLink to="/"
+                                    class="px-2 py-3 rounded-lg hover:bg-white/60 dark:hover:bg-slate-800/60"
+                                    @click="closeMenu">Home</RouterLink>
+                                <RouterLink :to="{ path: '/', hash: '#projects' }"
+                                    class="px-2 py-3 rounded-lg hover:bg-white/60 dark:hover:bg-slate-800/60"
+                                    @click="closeMenu">
                                     Projects</RouterLink>
-                                <RouterLink :to="{ path: '/', hash: '#skills' }" class="py-2" @click="closeMenu">Skills
+                                <RouterLink :to="{ path: '/', hash: '#skills' }"
+                                    class="px-2 py-3 rounded-lg hover:bg-white/60 dark:hover:bg-slate-800/60"
+                                    @click="closeMenu">Skills
                                 </RouterLink>
-                                <RouterLink :to="{ path: '/', hash: '#experience' }" class="py-2" @click="closeMenu">
+                                <RouterLink :to="{ path: '/', hash: '#experience' }"
+                                    class="px-2 py-3 rounded-lg hover:bg-white/60 dark:hover:bg-slate-800/60"
+                                    @click="closeMenu">
                                     Experience</RouterLink>
-                                <RouterLink :to="{ path: '/', hash: '#contact' }" class="py-2" @click="closeMenu">
+                                <RouterLink :to="{ path: '/', hash: '#contact' }"
+                                    class="px-2 py-3 rounded-lg hover:bg-white/60 dark:hover:bg-slate-800/60"
+                                    @click="closeMenu">
                                     Contact</RouterLink>
                             </nav>
 
-                            <!-- Theme toggle in the drawer (mobile) -->
-                            <button class="mt-3 rounded-md px-3 py-2 border border-white/40 dark:border-white/10"
-                                @click="emit('toggle-theme')">
-                                <span v-if="theme === 'light'">Switch to Dark</span>
-                                <span v-else>Switch to Light</span>
-                            </button>
                         </aside>
                     </div>
                 </Transition>
