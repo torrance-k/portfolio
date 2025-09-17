@@ -23,22 +23,20 @@
             </div>
         </div>
 
-
-
         <!-- Lightbox overlay -->
-        <div v-if="show" class="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm grid place-items-center p-4"
+        <div v-if="show && total" class="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm p-3 sm:p-6"
             @click.self="close" role="dialog" aria-modal="true">
             <!-- Fixed stage keeps controls in the same place regardless of image size -->
-            <div class="w-[min(90vw,1200px)]">
-                <div class="relative h-[80vh] w-full">
-                    <!-- The image is absolutely centered inside the stage -->
-                    <img :src="typeof imgs[current] === 'string' ? imgs[current] : (imgs[current] as any).src"
+            <div class="mx-auto w-[min(96vw,1200px)] grid grid-rows-[minmax(0,1fr)_auto_auto] h-[92svh] sm:h-auto">
+                <figure class="relative w-full h-full min-h-0">
+                    <img :src="(imgs[current] as any).src"
+                        :alt="(imgs[current] as any).caption || `Screenshot ${current + 1}`"
                         class="absolute inset-0 m-auto max-w-full max-h-full w-auto h-auto object-contain rounded-xl shadow-lg"
-                        :alt="typeof imgs[current] === 'string'
-                            ? ('screenshot ' + (current + 1))
-                            : ((imgs[current] as any).caption || ('screenshot ' + (current + 1)))" @load="onLoad" />
-                </div>
-                <figcaption v-if="(imgs[current] as any).caption" class="mt-3 text-sm text-white/85 text-center">
+                        @load="onLoad" />
+                </figure>
+
+                <figcaption v-if="(imgs[current] as any).caption"
+                    class="mt-2 sm:mt-3 text-xs sm:text-sm text-white/85 text-center px-2">
                     <template v-for="(part, j) in splitCaption((imgs[current]! as any).caption)" :key="j">
                         <span v-if="part.t === 'text'">{{ part.value }}</span>
                         <a v-else :href="part.url" target="_blank" rel="noopener noreferrer"
@@ -48,15 +46,16 @@
                     </template>
                 </figcaption>
 
-
-
                 <!-- Static control bar below the fixed stage -->
-                <div class="mt-4 flex items-center justify-between">
-                    <div class="text-xs text-white/80">Image {{ current + 1 }} of {{ total }}</div>
+                <div class="mt-2 sm:mt-4 flex items-center justify-between pb-[env(safe-area-inset-bottom)]">
+                    <div class="text-[11px] sm:text-xs text-white/80">Image {{ current + 1 }} of {{ total }}</div>
                     <div class="flex gap-2">
-                        <button class="btn" @click="prev" type="button" aria-label="Previous image">Prev</button>
-                        <button class="btn" @click="next" type="button" aria-label="Next image">Next</button>
-                        <button class="btn" @click="close" type="button" aria-label="Close viewer">Close</button>
+                        <button class="btn px-3 py-2 text-sm sm:text-base" @click="prev" type="button"
+                            aria-label="Previous image">Prev</button>
+                        <button class="btn px-3 py-2 text-sm sm:text-base" @click="next" type="button"
+                            aria-label="Next image">Next</button>
+                        <button class="btn px-3 py-2 text-sm sm:text-base" @click="close" type="button"
+                            aria-label="Close viewer">Close</button>
                     </div>
                 </div>
             </div>
