@@ -4,21 +4,78 @@
             <div
                 class="flex items-center justify-between rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-white/30 dark:border-white/10 shadow-sm backdrop-blur-md px-4 py-2">
                 <RouterLink to="/" class="font-semibold tracking-tight">Tori.dev</RouterLink>
-                <div ref="linksEl" class="relative flex items-center gap-4 text-sm">
-                    <RouterLink to="/" data-key="home" class="py-1">Home</RouterLink>
-                    <RouterLink :to="{ path: '/', hash: '#projects' }" data-key="projectsRoute" class="py-1">Projects
-                    </RouterLink>
-                    <RouterLink :to="{ path: '/', hash: '#skills' }" data-key="skills" class="py-1">Skills</RouterLink>
-                    <RouterLink :to="{ path: '/', hash: '#experience' }" data-key="experience" class="py-1">Experience
-                    </RouterLink>
-                    <RouterLink :to="{ path: '/', hash: '#contact' }" data-key="contact" class="py-1">Contact
-                    </RouterLink>
 
-                    <!-- animated underline -->
-                    <span
-                        class="pointer-events-none absolute -bottom-0.5 h-0.5 rounded-full bg-slate-900/80 dark:bg-white/80 transition-all duration-300"
-                        :style="{ left: underlineLeft + 'px', width: underlineWidth + 'px' }"></span>
+                <div class="hidden md:flex items center gap-4 text-sm">
+                    <div ref="linksEl" class="relative flex items-center gap-4 text-sm">
+                        <RouterLink to="/" data-key="home" class="py-1">Home</RouterLink>
+                        <RouterLink :to="{ path: '/', hash: '#projects' }" data-key="projectsRoute" class="py-1">
+                            Projects
+                        </RouterLink>
+                        <RouterLink :to="{ path: '/', hash: '#skills' }" data-key="skills" class="py-1">Skills
+                        </RouterLink>
+                        <RouterLink :to="{ path: '/', hash: '#experience' }" data-key="experience" class="py-1">
+                            Experience
+                        </RouterLink>
+                        <RouterLink :to="{ path: '/', hash: '#contact' }" data-key="contact" class="py-1">Contact
+                        </RouterLink>
+
+                        <!-- animated underline -->
+                        <span
+                            class="pointer-events-none absolute -bottom-0.5 h-0.5 rounded-full bg-slate-900/80 dark:bg-white/80 transition-all duration-300"
+                            :style="{ left: underlineLeft + 'px', width: underlineWidth + 'px' }"></span>
+                    </div>
                 </div>
+
+                <button
+                    class="md:hidden inline-flex items-center justify-center rounded-md p-2 border border-white/40 dark:border-white/10"
+                    :aria-expanded="open ? 'true' : 'false'" aria-controls="mobile-drawer" @click="open = !open">
+                    <span class="sr-only">Open menu</span>
+                    <!-- simple icon -->
+                    <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" />
+                    </svg>
+                </button>
+
+                <!-- MOBILE DRAWER -->
+                <Transition name="page">
+                    <div v-show="open" class="fixed inset-0 z-[70] md:hidden" @click.self="closeMenu"
+                        @keydown.esc="closeMenu">
+                        <!-- backdrop -->
+                        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+
+                        <!-- panel -->
+                        <aside id="mobile-drawer" class="ml-auto h-full w-[82vw] max-w-[320px] bg-white/95 dark:bg-slate-900/95 shadow-xl p-4
+             relative z-[71] grid gap-2">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="font-semibold">Menu</div>
+                                <button class="rounded-md p-2 border border-white/40 dark:border-white/10"
+                                    @click="closeMenu" aria-label="Close menu">✕</button>
+                            </div>
+
+                            <!-- Mobile links (the same targets as desktop) -->
+                            <nav class="grid gap-1 text-base">
+                                <RouterLink to="/" class="py-2" @click="closeMenu">Home</RouterLink>
+                                <RouterLink :to="{ path: '/', hash: '#projects' }" class="py-2" @click="closeMenu">
+                                    Projects</RouterLink>
+                                <RouterLink :to="{ path: '/', hash: '#skills' }" class="py-2" @click="closeMenu">Skills
+                                </RouterLink>
+                                <RouterLink :to="{ path: '/', hash: '#experience' }" class="py-2" @click="closeMenu">
+                                    Experience</RouterLink>
+                                <RouterLink :to="{ path: '/', hash: '#contact' }" class="py-2" @click="closeMenu">
+                                    Contact</RouterLink>
+                            </nav>
+
+                            <!-- Theme toggle in the drawer (mobile) -->
+                            <button class="mt-3 rounded-md px-3 py-2 border border-white/40 dark:border-white/10"
+                                @click="emit('toggle-theme')">
+                                <span v-if="theme === 'light'">Switch to Dark</span>
+                                <span v-else>Switch to Light</span>
+                            </button>
+                        </aside>
+                    </div>
+                </Transition>
+
                 <!-- THEME TOGGLE stays here, outside the linksEl block -->
                 <button @click="emit('toggle-theme')"
                     class="rounded-md px-3 py-1 border border-white/40 dark:border-white/10 bg-white/40 dark:bg-slate-800/40">
@@ -38,6 +95,11 @@ import { useRoute } from 'vue-router'
 
 const props = defineProps<{ theme: string }>()
 const emit = defineEmits<{ (e: 'toggle-theme'): void }>()
+const open = ref(false)
+
+function closeMenu() { open.value = false }
+
+// Close the drawer when route changes (after tapping a link)
 
 const linksEl = ref<HTMLElement | null>(null)
 const underlineLeft = ref(0)
@@ -131,6 +193,9 @@ watch(
     },
     { immediate: true }
 )
+
+watch(() => route.fullPath, () => { open.value = false })
+watch(open, v => { document.body.style.overflow = v ? 'hidden' : '' })
 
 function onResize() { placeUnderlineForKey(activeKey.value) }
 onMounted(() => window.addEventListener('resize', onResize))

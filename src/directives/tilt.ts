@@ -1,6 +1,8 @@
 import type { Directive } from "vue";
 export const vTilt: Directive<HTMLElement, void> = {
   mounted(el) {
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+
     el.style.transformStyle = "preserve-3d";
     el.style.transition = "transform 200ms ease";
     const onMove = (e: MouseEvent) => {
