@@ -1,6 +1,6 @@
-import prebuilt1 from "../assets/projects/prebuilt/enrollment-dash.png";
+import prebuilt1 from "../assets/projects/prebuilt/VisWidgets.png";
 import prebuilt2 from "../assets/projects/prebuilt/enrollment-gallery.png";
-import prebuit3 from "../assets/projects/prebuilt/chronabs.png";
+import prebuilt3 from "../assets/projects/prebuilt/chronabs.png";
 import dliDash1 from "../assets/projects/dli-dash/Dashboard.png";
 import dliDash2 from "../assets/projects/dli-dash/DLI_Updates_settings.png";
 import dliDash3 from "../assets/projects/dli-dash/DLI_Updates_sidebar.png";
@@ -31,17 +31,17 @@ export const projects: Project[] = [
       "Widgets that visualize student enrollment/attendance trends via filters and groupings.",
     tags: ["Vue", "Vite", "Next.js", "Highcharts"],
     images: [
-      // {
-      //   src: prebuilt1,
-      //   caption:
-      //     "Enrollment visualization showing the ongoing enrollment of students over a multi-year period. ",
-      // },
+      {
+        src: prebuilt1,
+        caption:
+          "Reusable explore widgets on display after a launchpad (dashboard) renovation.",
+      },
       {
         src: prebuilt2,
         caption: `Enrollment visualization showing the ongoing enrollment of students over a multi-year period. 3) Number of yesterday's enrolled students. 4) Statistical enrollment differences. 5) Year to year trendline. 6) 3 dot menu to print a PDF or download an image of the widget. 7) Explore button to view futher visualizations. Explore more at [Renaissance release notes](https://support.renaissance.com/s/article/Enrollment-Data-Visualizations-1752691194424?language=en_US)`,
       },
       {
-        src: prebuit3,
+        src: prebuilt3,
         caption:
           "Chronic Absence widget and data vizualization. The widget acts as a quick snapshot of a district or schools Chronic Absence rate. The explore button of the widget leads a user to the Chronic Absence data visualization. This data can be viewed via filters of School, Grade Level, Race/Ethnicity, Gender and more. It can also be grouped via School, Grade Level, Demographic, and pre-determined School Group, or by all groupings together.",
       },
