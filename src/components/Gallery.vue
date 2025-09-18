@@ -27,8 +27,9 @@
         <div v-if="show && total" class="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm p-3 sm:p-6"
             @click.self="close" role="dialog" aria-modal="true">
             <!-- Fixed stage keeps controls in the same place regardless of image size -->
-            <div class="mx-auto w-[min(96vw,1200px)] grid grid-rows-[minmax(0,1fr)_auto_auto] h-[92svh] sm:h-auto">
-                <figure class="relative w-full h-full min-h-0">
+            <div
+                class="mx-auto w-[min(96vw,1200px)] grid grid-rows-[minmax(0,1fr)_auto_auto] h-[92svh] sm:h-[80vh] lg:h-[85vh]">
+                <figure class="relative w-full h-full min-h-0 sm:min-h-[320px]">
                     <img :src="(imgs[current] as any).src"
                         :alt="(imgs[current] as any).caption || `Screenshot ${current + 1}`"
                         class="absolute inset-0 m-auto max-w-full max-h-full w-auto h-auto object-contain rounded-xl shadow-lg"
