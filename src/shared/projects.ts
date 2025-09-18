@@ -56,16 +56,14 @@ export const projects: Project[] = [
     tags: ["Vue", "AWS", "Node-RED"],
     images: [
       {
-        src: dliDash1,
-        caption: "",
-      },
-      {
         src: dliDash2,
-        caption: "Revamp of controller settings page",
+        caption:
+          "Zone settings page renovation. The goal was to give each control its own space while achieving visual appeal so that any user could easily understand and manipulate their lighting settings.",
       },
       {
         src: dliDash3,
-        caption: "Revamp of controller side navigation",
+        caption:
+          "Side navigation renovation. The icons were updated to better reflect their behavior, and the navigation items were updated and combined in conjuction with a settings page split out for more defined understanding for the user.",
       },
     ],
     video: [
